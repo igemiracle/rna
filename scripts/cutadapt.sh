@@ -29,7 +29,9 @@ source /ocean/projects/bio200049p/yzheng9/rna_env/bin/activate
 export LD_LIBRARY_PATH=/ocean/projects/bio200049p/yzheng9/rna_env/lib:\$LD_LIBRARY_PATH
 
 $cmd1
+pigz -p 8 $3/${sample_name}_${col4}.fq
 $cmd2
+pigz -p 8 $3/${sample_name}_${col4}_R1.fq $3/${sample_name}_${col4}_R2.fq
 "
 
     script_name="cutadapt_${sample_name}_${col4}.sh"
