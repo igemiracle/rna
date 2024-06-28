@@ -22,7 +22,8 @@ do
             script_name="flash_${sample_name}.sh"
             cat <<EOT > $2"/sb_scripts/"$script_name
 #!/bin/bash
-#SBATCH -p RM
+#SBATCH -p RM-shared
+#SBATCH --ntasks-per-node=8
 #SBATCH -t 02:00:00
 #SBATCH -A bio200049p
 #SBATCH -J flash

@@ -12,9 +12,9 @@ mkdir -p $4"/sb_scripts"
 tail -n +2 $1 | awk -F'\t' '{print $2, $4}' | while read -r col2 col4
 do
     sample_name="$col2"
-    cmd_long_1="bowtie2 -x ${index_dir_path}/long -p 8 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col4}.fq.gz -S ${sample_name}_${col4}.sam"
-    cmd_long_2="bowtie2 -x ${index_dir_path}/long -p 8 --end-to-end -k 2 -1 ${input_path}/${sample_name}_${col4}_R1.fq.gz -1 ${input_path}/${sample_name}_${col4}_R2.fq.gz -S ${sample_name}_${col4}_notCombined.sam"
-    cmd_short="bowtie2 -x ${index_dir_path}/short -p 8 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col4}.fq.gz -S ${sample_name}_${col4}.sam"
+    cmd_long_1="bowtie2 -x ${index_dir_path}/long -p 4 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col4}.fq.gz | samtools view -bS > ${sample_name}_${col4}.bam"
+    cmd_long_2="bowtie2 -x ${index_dir_path}/long -p 4 --end-to-end -k 2 -1 ${input_path}/${sample_name}_${col4}_R1.fq.gz -2 ${input_path}/${sample_name}_${col4}_R2.fq.gz -S ${sample_name}_${col4}_notCombined.sam"
+    cmd_short="bowtie2 -x ${index_dir_path}/short -p 4 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col4}.fq.gz -S ${sample_name}_${col4}.sam"
     if [[ $sample_name == L* ]]
     then 
         command=${cmd_long_1}"; "${cmd_long_2}
@@ -23,8 +23,9 @@ do
         command=${cmd_short}
     fi
     script="#!/bin/bash
-#SBATCH -p RM
-#SBATCH -t 30:00
+#SBATCH -p RM-shared
+#SBATCH --ntasks-per-node=4
+#SBATCH -t 5:00:00
 #SBATCH -A bio200049p
 #SBATCH -J bowtie2
 #SBATCH -o bowtie_${sample_name}.o

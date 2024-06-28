@@ -24,7 +24,7 @@ do
     script="#!/bin/bash
 #SBATCH -p RM-shared
 #SBATCH --ntasks-per-node=4
-#SBATCH -t 12:00:00
+#SBATCH -t 5:00:00
 #SBATCH -A bio200049p
 #SBATCH -J cutadapt
 #SBATCH -o cutadapt_${sample_name}.o
@@ -51,9 +51,20 @@ pigz -p 4 $3/${sample_name}_${col4}_R1.fq $3/${sample_name}_${col4}_R2.fq
     then
         script_name="cutadapt_${sample_name}.sh" # _${col4}.sh
         echo "$script" > "$3/sb_scripts/$script_name"
-        echo "$command" >> "$3/sb_scripts/$script_name"
+        # if there exist the file, don't write the cmd
+        if [ -f "$3/${sample_name}_${col4}.fq.gz" ]
+        then
+            #continue
+            echo "${sample_name}_${col4}.fq.gz exists!"
+        else
+            echo "$command" >> "$3/sb_scripts/$script_name"
+        fi
     else
-        if [ "$col4" == "$previous_col4" ]
+        if [ -f "$3/${sample_name}_${col4}.fq.gz" ]
+        then
+            #continue
+            echo "${sample_name}_${col4}.fq.gz exists!"
+        elif [ "$col4" == "$previous_col4" ]
         then
             echo "$command_with_same" >> "$3/sb_scripts/$script_name"
         else
