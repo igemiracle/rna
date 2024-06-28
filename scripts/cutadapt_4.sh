@@ -1,6 +1,9 @@
 #!usr/bin/bash
 # @yzheng9 This script is to read in a TXT file, iterate line, and write into a sbtach script
 
+# example: bash ../rna/scripts/cutadapt_4.sh ../testdata/HUTR-lib-master-list.txt /ocean/projects/bio200049p/yzheng9/test/01_Flash_Cut /ocean/projects/bio200049p/yzheng9/test/02_Cutadapt
+
+
 # $1 barcode file
 # $2 fastq dir full path
 # $3 output path
