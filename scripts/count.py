@@ -24,7 +24,8 @@ bamfile = pysam.AlignmentFile(bamfile_path, 'rb')
 
 # Make a dictionary to store the constructs; key: readID(col1), value: construct(col3)
 map = {}
-for read in bamfile.fetch():
+# pysam.AlignmentFile.fetch automatically skip the header
+for read in bamfile:
     readID = read.query_name
     # get the CIGAR string
     cigar = read.cigarstring
@@ -32,7 +33,7 @@ for read in bamfile.fetch():
     construct = read.reference_name
     
     # if the CIGAR string matches the pattern
-    if pattern.match(cigar):
+    if cigar and pattern.search(cigar):
         # check if the construct exists in the dictionary
         if construct not in map:
             map[construct] = []

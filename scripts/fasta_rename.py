@@ -1,5 +1,7 @@
 #!usr/bin/python
 
+import sys
+
 def replace_spaces_in_fasta(input_file, output_file):
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
         for line in infile:
@@ -11,6 +13,6 @@ def replace_spaces_in_fasta(input_file, output_file):
                     line = line[:-2] + '\n'
             outfile.write(line)
 
-input_file = '/Users/jingl1/Desktop/CMU/summer project/rethepathofrawdata/cwr_humanUTRset_clean_long.fa'
-output_file = 'cwr_humanUTRset_clean_long.fa'
+input_file = sys.argv[1]
+output_file = 'cwr_humanUTRset_clean_short_1.fa'
 replace_spaces_in_fasta(input_file, output_file)

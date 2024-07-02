@@ -9,12 +9,12 @@ output_path="$4"
 mkdir -p $4"/sb_scripts"
 
 # read the txt file and process it, skip the header
-tail -n +2 $1 | awk -F'\t' '{print $2, $4}' | while read -r col2 col4
+tail -n +2 $1 | awk -F'\t' '{print $2, $3}' | while read -r col2 col3
 do
     sample_name="$col2"
-    cmd_long_1="bowtie2 -x ${index_dir_path}/long -p 4 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col4}.fq.gz | samtools view -bS > ${sample_name}_${col4}.bam"
-    cmd_long_2="bowtie2 -x ${index_dir_path}/long -p 4 --end-to-end -k 2 -1 ${input_path}/${sample_name}_${col4}_R1.fq.gz -2 ${input_path}/${sample_name}_${col4}_R2.fq.gz -S ${sample_name}_${col4}_notCombined.sam"
-    cmd_short="bowtie2 -x ${index_dir_path}/short -p 4 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col4}.fq.gz -S ${sample_name}_${col4}.sam"
+    cmd_long_1="bowtie2 -x ${index_dir_path}/long -p 4 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col3}.fq.gz | samtools view -@ 4 -bS > ${sample_name}_${col3}.bam"
+    cmd_long_2="bowtie2 -x ${index_dir_path}/long -p 4 --end-to-end -k 2 -1 ${input_path}/${sample_name}_${col3}_R1.fq.gz -2 ${input_path}/${sample_name}_${col3}_R2.fq.gz | samtools view -@ 4 -bS > ${sample_name}_${col3}_notCombined.bam"
+    cmd_short="bowtie2 -x ${index_dir_path}/short -p 4 --end-to-end -k 2 -U ${input_path}/${sample_name}_${col3}.fq.gz | samtools view -@ 4 -bS > ${sample_name}_${col3}.bam"
     if [[ $sample_name == L* ]]
     then 
         command=${cmd_long_1}"; "${cmd_long_2}
@@ -25,10 +25,10 @@ do
     script="#!/bin/bash
 #SBATCH -p RM-shared
 #SBATCH --ntasks-per-node=4
-#SBATCH -t 5:00:00
+#SBATCH -t 01:00:00
 #SBATCH -A bio200049p
 #SBATCH -J bowtie2
-#SBATCH -o bowtie_${sample_name}.o
+#SBATCH -o bowtie_${sample_name}_${col3}.o
 
 module load anaconda3/2022.10
 source /ocean/projects/bio200049p/yzheng9/rna_env/bin/activate
@@ -37,7 +37,7 @@ export LD_LIBRARY_PATH=/ocean/projects/bio200049p/yzheng9/rna_env/lib:\$LD_LIBRA
 $command
 "
 
-    script_name="bowtie_${sample_name}_${col4}.sh"
+    script_name="bowtie_${sample_name}_${col3}.sh"
     echo "$script" > "$4/sb_scripts/$script_name"
 done
 
