@@ -9,6 +9,7 @@
 # $3 output path
 
 three_end_barcode="AGATCTGTGATTAAGCCC"
+rc_three_end_barcode="GGGCTTAATCACAGATCT"
 
 # mkdir of sbatch scripts
 mkdir -p $3"/sb_scripts"
@@ -20,7 +21,7 @@ tail -n +2 $1 | awk -F'\t' '{print $2, $3, $7}' | while read -r col2 col3 col7
 do
     sample_name="$col2"
     cmd1="cutadapt -j 4 -e 0 --trimmed-only -O 26 -a $three_end_barcode -g $col7 -o $3/${sample_name}_${col3}.fq $2/${sample_name}.extendedFrags.fastq"
-    cmd2="cutadapt -j 4 -e 0 --trimmed-only -O 26 -a $three_end_barcode -g $col7 -o $3/${sample_name}_${col3}_R1.fq -p $3/${sample_name}_${col3}_R2.fq $2/${sample_name}.notCombined_1.fastq $2/${sample_name}.notCombined_2.fastq"
+    cmd2="cutadapt -j 4 -e 0 --trimmed-only -O 26 -A $rc_three_end_barcode -g $col7 -o $3/${sample_name}_${col3}_R1.fq -p $3/${sample_name}_${col3}_R2.fq $2/${sample_name}.notCombined_1.fastq $2/${sample_name}.notCombined_2.fastq"
     script="#!/bin/bash
 #SBATCH -p RM-shared
 #SBATCH --ntasks-per-node=4

@@ -28,13 +28,14 @@ do
 #SBATCH -t 01:00:00
 #SBATCH -A bio200049p
 #SBATCH -J bowtie2
-#SBATCH -o bowtie_${sample_name}_${col3}.o
+#SBATCH -o bowtie_${sample_name}.o
 
 module load anaconda3/2022.10
 source /ocean/projects/bio200049p/yzheng9/rna_env/bin/activate
 export LD_LIBRARY_PATH=/ocean/projects/bio200049p/yzheng9/rna_env/lib:\$LD_LIBRARY_PATH
 
 $command
+echo 'Bam files generated!'
 "
 
     script_name="bowtie_${sample_name}_${col3}.sh"
